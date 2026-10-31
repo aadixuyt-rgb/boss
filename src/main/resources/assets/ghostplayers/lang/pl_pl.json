@@ -1,4 +1,5 @@
 {
+  "key.categories.ghostplayers": "GhostPlayers",
   "key.ghostplayers.toggle": "Włącz/wyłącz GhostPlayers",
-  "key.ghostplayers.gui": "Ustawienia GhostPlayers"
+  "key.ghostplayers.gui": "Otwórz ustawienia GhostPlayers"
 }
