@@ -18,10 +18,13 @@ public final class GhostPlayersClient implements ClientModInitializer {
     public void onInitializeClient() {
         GhostConfig.load();
 
+        // These are the only two GhostPlayers keybinds exposed in Minecraft Controls.
         toggleKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.ghostplayers.toggle", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_RIGHT_SHIFT, "key.categories.misc"));
+                "key.ghostplayers.toggle", InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_RIGHT_SHIFT, "key.categories.ghostplayers"));
         guiKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.ghostplayers.gui", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_K, "key.categories.misc"));
+                "key.ghostplayers.gui", InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_K, "key.categories.ghostplayers"));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (toggleKey.wasPressed()) {
