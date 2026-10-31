@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "ghostplayers",
+  "version": "${version}",
+  "name": "GhostPlayers",
+  "description": "Prawy Shift włącza/wyłącza, K otwiera ustawienia (ukrycie 0-100%): inni gracze są przezroczyści, a ich hitboxy są pomijane (tylko graczy).",
+  "authors": ["Adixu_YT"],
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": { "client": ["pl.adixuyt.ghostplayers.GhostPlayersClient"] },
+  "mixins": ["ghostplayers.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "~1.21.4",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}

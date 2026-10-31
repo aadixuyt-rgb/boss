@@ -1,0 +1,37 @@
+package pl.adixuyt.ghostplayers.mixin;
+
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.LivingEntityRenderer;
+import net.minecraft.client.render.entity.state.LivingEntityRenderState;
+import net.minecraft.client.util.math.MatrixStack;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import pl.adixuyt.ghostplayers.GhostConfig;
+import pl.adixuyt.ghostplayers.GhostFlag;
+import pl.adixuyt.ghostplayers.GhostPlayersClient;
+
+@Mixin(LivingEntityRenderer.class)
+public abstract class LivingEntityRendererMixin {
+    private static final String RENDER = "render(Lnet/minecraft/client/render/entity/state/LivingEntityRenderState;"
+            + "Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V";
+
+    /** 100 % = skin fully invisible; held items are hidden too so nothing floats in the air. */
+    @Inject(method = RENDER, at = @At("HEAD"), cancellable = true)
+    private void ghostplayers$hideCompletely(LivingEntityRenderState state, MatrixStack matrices,
+                                             VertexConsumerProvider consumers, int light, CallbackInfo ci) {
+        if (GhostPlayersClient.enabled && GhostConfig.hidePercent >= 100
+                && state instanceof GhostFlag flag && flag.ghostplayers$isGhost()) {
+            ci.cancel();
+        }
+    }
+
+    /** Vanilla's fixed ghost tint (0x26FFFFFF, ~15 % alpha) -> alpha chosen in the GUI. */
+    @ModifyConstant(method = RENDER, constant = @Constant(intValue = 654311423))
+    private int ghostplayers$ghostColor(int original) {
+        return GhostPlayersClient.enabled ? GhostConfig.color() : original;
+    }
+}
