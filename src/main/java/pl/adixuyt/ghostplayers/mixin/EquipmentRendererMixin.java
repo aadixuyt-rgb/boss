@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import pl.adixuyt.ghostplayers.GhostConfig;
 import pl.adixuyt.ghostplayers.GhostPlayersClient;
 
-/** Makes worn armor and head equipment use the same opacity as the entity skin. */
+/** Gives worn armor and head equipment their own transparency setting. */
 @Mixin(EquipmentRenderer.class)
 public abstract class EquipmentRendererMixin {
     private static final String RENDER_7 =
@@ -25,10 +25,6 @@ public abstract class EquipmentRendererMixin {
             + "Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/util/math/MatrixStack;"
             + "Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/util/Identifier;)V";
 
-    /*
-     * Both overloads exist in Minecraft 1.21.4. Different equipment features use
-     * different overloads, so apply the translucent layer to either one.
-     */
     @Redirect(
             method = {RENDER_7, RENDER_8},
             at = @At(
@@ -53,8 +49,6 @@ public abstract class EquipmentRendererMixin {
     )
     private int ghostplayers$equipmentOpacity(int originalColor) {
         if (!GhostPlayersClient.enabled) return originalColor;
-        int originalAlpha = (originalColor >>> 24) & 0xFF;
-        int alpha = Math.round(originalAlpha * ((100 - GhostConfig.hidePercent) / 100.0f));
-        return (originalColor & 0x00FFFFFF) | (alpha << 24);
+        return GhostConfig.equipmentColor(originalColor);
     }
 }
