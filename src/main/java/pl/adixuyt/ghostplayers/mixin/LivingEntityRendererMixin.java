@@ -1,6 +1,8 @@
 package pl.adixuyt.ghostplayers.mixin;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.state.LivingEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
@@ -19,7 +21,20 @@ public abstract class LivingEntityRendererMixin {
     private static final String RENDER = "render(Lnet/minecraft/client/render/entity/state/LivingEntityRenderState;"
             + "Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V";
 
-    /** 100 % = skin fully invisible; held items are hidden too so nothing floats in the air. */
+    /** Mark all remote living entities, including mobs, as ghosts while the feature is enabled. */
+    @Inject(method = "updateRenderState(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/client/render/entity/state/LivingEntityRenderState;F)V",
+            at = @At("RETURN"))
+    private void ghostplayers$markLivingEntity(LivingEntity entity, LivingEntityRenderState state,
+                                               float tickDelta, CallbackInfo ci) {
+        boolean ghost = GhostPlayersClient.enabled && entity != MinecraftClient.getInstance().player;
+        ((GhostFlag) state).ghostplayers$setGhost(ghost);
+        if (ghost) {
+            state.invisible = true;
+            state.invisibleToPlayer = false;
+        }
+    }
+
+    /** 100 % = fully hidden, using the same opacity for the model and its features. */
     @Inject(method = RENDER, at = @At("HEAD"), cancellable = true)
     private void ghostplayers$hideCompletely(LivingEntityRenderState state, MatrixStack matrices,
                                              VertexConsumerProvider consumers, int light, CallbackInfo ci) {
