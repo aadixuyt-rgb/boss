@@ -1,6 +1,6 @@
 package pl.adixuyt.ghostplayers.mixin;
 
-import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
