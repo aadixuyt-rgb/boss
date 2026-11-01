@@ -1,11 +1,12 @@
 package pl.adixuyt.ghostplayers.mixin;
 
-import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
+import net.minecraft.client.render.entity.state.LivingEntityRenderState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import pl.adixuyt.ghostplayers.GhostFlag;
 
-@Mixin(PlayerEntityRenderState.class)
+/** Stores the ghost marker on every living-entity render state, not just players. */
+@Mixin(LivingEntityRenderState.class)
 public abstract class PlayerEntityRenderStateMixin implements GhostFlag {
     @Unique private boolean ghostplayers$ghost;
 
